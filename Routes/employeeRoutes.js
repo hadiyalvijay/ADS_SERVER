@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new employee
+    // Create new employee with the profile image (Base64 string)
     const newEmployee = new Employee({
       firstName,
       middleName,
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
       panCard,
       gender,
       role,
-      profilepic,
+      profilepic,  // Store Base64 encoded image here
     });
 
     await newEmployee.save();
@@ -84,7 +84,7 @@ router.get('/:id', async (req, res) => {
     if (!employee) {
       return res.status(404).json({ msg: 'Employee not found' });
     }
-    res.status(200).json(employee);  // Return the employee data
+    res.status(200).json(employee);  // Return the employee data, including the Base64 image
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

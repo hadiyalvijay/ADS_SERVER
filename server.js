@@ -9,7 +9,9 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://adsbyuv.surge.sh'
+}));
 app.use(bodyParser.json());
 
 // Routes

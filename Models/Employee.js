@@ -22,5 +22,4 @@ const EmployeeSchema = new mongoose.Schema({
   profilepic: { type: String },
 });
 
-// Export the model
 module.exports = mongoose.model('Employee', EmployeeSchema);
