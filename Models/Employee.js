@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const EmployeeSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
-  middleName: { type: String, required: true },
+  middleName: { type: String },
   lastName: { type: String, required: true },
   department: { type: String, required: true },
   designation: { type: String, required: true },
@@ -19,7 +19,7 @@ const EmployeeSchema = new mongoose.Schema({
   panCard: { type: String },
   gender: { type: String },
   role: { type: String },
-  profilepic: { type: String },
+  profilepic: { type: String }, // Store image path
 });
 
 module.exports = mongoose.model('Employee', EmployeeSchema);

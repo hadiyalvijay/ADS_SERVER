@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const connectDB = require('./db'); // Assuming you have a database connection file
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -16,6 +17,9 @@ app.use(cors({
 
 // Parse JSON request bodies
 app.use(bodyParser.json());
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
+
+
 
 // Define your API routes
 app.use('/api/auth', require('./Routes/auth'));

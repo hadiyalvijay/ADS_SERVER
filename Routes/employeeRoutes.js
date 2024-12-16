@@ -1,14 +1,29 @@
 const express = require('express');
+const path = require('path');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
 const Employee = require('../Models/Employee');
 const router = express.Router();
 
+// Configure multer for image upload
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, '../public/images')); // Set destination folder
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName); // Set unique file name
+  },
+});
+
+const upload = multer({ storage });
+
 // Create Employee (POST)
-router.post('/', async (req, res) => {
+router.post('/', upload.single('profilepic'), async (req, res) => {
   const {
     firstName, middleName, lastName, department, designation, mobileNumber, officeEmail,
     personalEmail, password, confirmPassword, technology, skypeId, employmentType,
-    birthDate, joiningDate, aadharCard, panCard, gender, role, profilepic
+    birthDate, joiningDate, aadharCard, panCard, gender, role,
   } = req.body;
 
   try {
@@ -32,7 +47,10 @@ router.post('/', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new employee with the profile image (Base64 string)
+    // Get the profile picture path
+    const profilePicPath = req.file ? `/images/${req.file.filename}` : null;
+
+    // Create new employee
     const newEmployee = new Employee({
       firstName,
       middleName,
@@ -52,7 +70,7 @@ router.post('/', async (req, res) => {
       panCard,
       gender,
       role,
-      profilepic,  // Store Base64 encoded image here
+      profilepic: profilePicPath, // Save the image path
     });
 
     await newEmployee.save();
@@ -67,8 +85,8 @@ router.post('/', async (req, res) => {
 // GET all employees
 router.get('/', async (req, res) => {
   try {
-    const employees = await Employee.find();  // Fetch all employees from the database
-    res.status(200).json(employees);  // Return all employees in the response
+    const employees = await Employee.find();
+    res.status(200).json({ employees });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -80,11 +98,11 @@ router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const employee = await Employee.findById(id);  // Fetch a single employee by its ID
+    const employee = await Employee.findById(id);
     if (!employee) {
       return res.status(404).json({ msg: 'Employee not found' });
     }
-    res.status(200).json(employee);  // Return the employee data, including the Base64 image
+    res.status(200).json(employee);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
