@@ -1,23 +1,25 @@
 const express = require('express');
-const path = require('path');
 const connectDB = require('./db'); // Assuming you have a database connection file
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 
 // Connect to database
 connectDB();
-
 // CORS configuration
+// Enable CORS for requests from specific origin
 app.use(cors({
-  origin: 'https://adsbyuv.surge.sh' // Replace with your frontend's origin
+  origin: 'http://localhost:5173',  // Allow requests from this frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed methods
+  credentials: true  // If you are sending cookies or authorization headers
 }));
-
 // Parse JSON request bodies
 app.use(bodyParser.json());
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 
@@ -26,4 +28,6 @@ app.use('/api/auth', require('./Routes/auth'));
 app.use('/api/employees', require('./Routes/employeeRoutes'));
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+const server = app.listen(PORT, () => {
+    console.log(`Server started successfully on port ${PORT}`);
+});
