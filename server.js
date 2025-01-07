@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const app = express();
 
-
 connectDB();
 
 app.use(cors({
@@ -20,22 +19,6 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// app.get('/api/employees', async (req, res) => {
-//   try {
-//       const employees = await Employee.find({});
-//       const baseUrl = `${req.protocol}://${req.get('host')}`;
-//       const employeesWithUrls = employees.map(employee => ({
-//           ...employee.toObject(),
-//           profilePic: employee.profilePic ? `${baseUrl}${employee.profilePic}` : null,
-//       }));
-//       res.status(200).json(employeesWithUrls);
-//   } catch (err) {
-//       console.error(err);
-//       res.status(500).json({ error: 'Failed to fetch employees' });
-//   }
-// });
-
-// Define your API routes
 app.use('/api/auth', require('./Routes/auth'));
 app.use('/api/employees', require('./Routes/employeeRoutes'));
 
